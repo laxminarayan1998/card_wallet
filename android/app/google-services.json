@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "22854067775",
+    "project_id": "card-wallet-eac32",
+    "storage_bucket": "card-wallet-eac32.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22854067775:android:fc5fb9ae83b041139c3a8a",
+        "android_client_info": {
+          "package_name": "com.nryn.card_wallet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "22854067775-4khd9384khpmrttbtovdbboi5ljut5j6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbBJ4NwvRbFQN4oVGTDSckhuvYvYKts4c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22854067775-4khd9384khpmrttbtovdbboi5ljut5j6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
