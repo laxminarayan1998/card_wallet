@@ -1,13 +1,22 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
 import 'package:card_walet/Screens/Search%20Result%20Screen/search_result_screen.dart';
+import 'package:card_walet/Utility/utils.dart';
 import 'package:card_walet/Widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 import 'Widgets/item_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
+
+  final AuthController authController = Get.find();
 
   final sportsList = [
     {
@@ -44,6 +53,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(authController.appUser.value.toJson());
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Column(
@@ -157,7 +167,8 @@ class HomeScreen extends StatelessWidget {
                 ),
                 itemBuilder: (_, index) => GestureDetector(
                   onTap: () {
-                    Get.to(SearchResultScreen());
+                    authController.getSportList('sport');
+                    // Get.to(SearchResultScreen());
                   },
                   child: ItemWidget(
                     color: sportsList[index]['color']! as Color,

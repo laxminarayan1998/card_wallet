@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:card_walet/Screens/Signup%20Screen/signup_screen.dart';
+import 'package:card_walet/Screens/Login%20Screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +10,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 2), () => Get.to(SignupScreen()));
+    Timer(Duration(seconds: 2), () => Get.to(LoginScreen()));
 
     return Scaffold(
       body: Stack(
