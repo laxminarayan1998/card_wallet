@@ -154,44 +154,6 @@ class SignupScreen extends StatelessWidget {
                       }
                     },
                   ),
-                  SizedBox(
-                    height: Get.height * .05,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.to(LoginScreen());
-                    },
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text.rich(
-                        TextSpan(
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: const Color(0xff000000),
-                            height: 1.7916666666666667,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: 'Already have an account?',
-                            ),
-                            TextSpan(
-                              text: ' ',
-                              style: TextStyle(
-                                color: const Color(0xff919191),
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Login',
-                              style: TextStyle(
-                                color: const Color(0xff1643c4),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: defaultPadding),
                 ],
               ),
             ),

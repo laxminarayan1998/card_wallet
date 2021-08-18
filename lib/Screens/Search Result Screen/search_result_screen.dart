@@ -1,3 +1,4 @@
+import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
 import 'package:card_walet/Screens/Card%20Details%20Screen/card_details_screen.dart';
 import 'package:card_walet/Widgets/user_avatar.dart';
 import 'package:card_walet/constants.dart';
@@ -6,51 +7,114 @@ import 'package:get/get.dart';
 
 import 'Widgets/custom_card.dart';
 
-class SearchResultScreen extends StatelessWidget {
-  const SearchResultScreen({Key? key}) : super(key: key);
+class SearchResultScreen extends StatefulWidget {
+  SearchResultScreen({Key? key}) : super(key: key);
+
+  @override
+  _SearchResultScreenState createState() => _SearchResultScreenState();
+}
+
+class _SearchResultScreenState extends State<SearchResultScreen> {
+  final AuthController authController = Get.find();
+
+  final scrollController = ScrollController();
+
+  int limit = 10;
+  int skip = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(
+      () {
+        if (scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) {
+          skip = limit + skip;
+          if (limit <= authController.totalCount.value) {
+            authController.getSportList(
+              limit: limit,
+              skip: skip,
+            );
+          }
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: mainColor,
-        title: Text(
-          'Search Results',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+    authController.totalCount.value = 0;
+    return FutureBuilder(
+      future: Future.wait([
+        authController.getSportList(
+          limit: limit,
+          skip: 0,
         ),
-        actions: [
-          Transform.scale(
-            scale: .7,
-            child: UserAvatar(),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
-          child: Column(
-            children: [
-              ...List.generate(
-                6,
-                (index) => CustomCard(
-                  img: 'assets/images/img1.png',
-                  baseInsert: 'Base',
-                  collection: 'Gala',
-                  name: 'LeBorn James',
-                  parrallel: '#\'d / 79',
-                  printRun: '79',
-                  year: '2014',
-                  onPress: () {
-                    Get.to(() => CardDetailsScreen());
-                  },
-                ),
-              ).toList()
+        authController.getSportListCount()
+      ]),
+      builder: (context, snapshot) {
+        return Scaffold(
+          appBar: AppBar(
+            backgroundColor: mainColor,
+            leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+              ),
+            ),
+            title: Text(
+              'Search Results (${authController.totalCount})',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              Transform.scale(
+                scale: .7,
+                child: UserAvatar(),
+              ),
             ],
           ),
-        ),
-      ),
+          body: SingleChildScrollView(
+            controller: scrollController,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: defaultPadding),
+              child: Obx(
+                () => Column(
+                  children: [
+                    ...List.generate(
+                      authController.playersList.length,
+                      (index) => CustomCard(
+                        img: authController.playersList[index].imageUrl,
+                        baseInsert: authController.playersList[index].sport,
+                        collection: authController.playersList[index].variation,
+                        name: authController.playersList[index].playerName,
+                        parrallel: '#\'d / 79',
+                        printRun: '79',
+                        setName: authController.playersList[index].setName,
+                        year: authController.playersList[index].setYear,
+                        price: authController.playersList[index].priceScore,
+                        onPress: () {
+                          Get.to(() => CardDetailsScreen());
+                        },
+                      ),
+                    ).toList()
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

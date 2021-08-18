@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:card_walet/Model/SportModel.dart';
 import 'package:card_walet/Model/UserModel.dart';
 import 'package:card_walet/Screens/Home%20Screen/home_screen.dart';
+import 'package:card_walet/Screens/Login%20Screen/login_screen.dart';
 import 'package:card_walet/Screens/OTP%20Screen/otp_screen.dart';
 import 'package:card_walet/Screens/Signup%20Screen/signup_screen.dart';
 import 'package:card_walet/Services/connect_helper.dart';
@@ -21,40 +23,26 @@ class AuthController extends GetxController {
   String? verificationId;
   var appUser = UserModel().obs;
   var authToken = ''.obs;
+  var playersList = <SportModel>[].obs;
+  var selectedSport = ''.obs;
+  var totalCount = 0.obs;
 
-  Future<void> getSportList(String? sport) async {
-    final uri = json.encode({
-      "offset": 0,
-      "limit": 100,
-      "skip": 0,
-      "order": "string",
-      "where": {"additionalProp1": {}},
-      "fields": {
-        "active": true,
-        "deleted": true,
-        "updatedAt": true,
-        "createdAt": true,
-        "id": true,
-        "global_rank": true,
-        "rank_score": true,
-        "sport_rank": true,
-        "player_id": true,
-        "player_name": true,
-        "set_id": true,
-        "set_name": true,
-        "set_year": true,
-        "variation": true,
-        "variation_id": true,
-        "sport": true,
-        "image_url": true,
-        "price_score": true,
-        "trend": true,
-        "excluded": true
-      }
-    });
+  Future<void> getSportList({int? limit, int? skip}) async {
+    final prefs = await SharedPreferences.getInstance();
+    // playersList.clear();
+    final uri = json.encode(
+      {
+        "offset": 0,
+        "limit": limit!,
+        "skip": skip!,
+        "where": {
+          "sport": selectedSport.value,
+        }
+      },
+    );
     var encodedUrl = Uri.encodeFull(uri);
     final response = await _connectHelper.makeRequest(
-      'player-list?filter?=$encodedUrl',
+      'player-list?filter=$encodedUrl',
       Request.GET,
       null,
       true,
@@ -64,59 +52,104 @@ class AuthController extends GetxController {
       },
     );
 
-    log(response.body);
+    if (response.statusCode == 200) {
+      final players = json.decode(response.body) as List;
+
+      players.forEach((player) => playersList.add(SportModel.fromJson(player)));
+
+      Utility.showLog(msg: players.length);
+    } else if (response.statusCode == 401) {
+      prefs.clear();
+      Get.offAll(() => LoginScreen());
+    }
+  }
+
+  Future<void> getSportListCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    playersList.clear();
+    final uri = json.encode(
+      {
+        "sport": selectedSport.value,
+      },
+    );
+    var encodedUrl = Uri.encodeFull(uri);
+    final response = await _connectHelper.makeRequest(
+      'player-list/count?where=$encodedUrl',
+      Request.GET,
+      null,
+      true,
+      {
+        'Content-Type': 'application/json',
+        'Authorization': authToken.value,
+      },
+    );
+
+    final res = json.decode(response.body);
+
+    if (response.statusCode == 200) {
+      totalCount.value = res['count'];
+    } else if (response.statusCode == 401) {
+      prefs.clear();
+      Get.offAll(() => LoginScreen());
+    }
+
+    Utility.showLog(level: Level.warning, msg: totalCount.value);
   }
 
   Future<bool> getUserData() async {
-    // Utility.showLoader();
     final prefs = await SharedPreferences.getInstance();
     final _code = prefs.getString('countryCode');
     final _phone = prefs.getString('phone');
     final _token = prefs.getString('token');
+    final _uid = prefs.getString('uid');
 
-    if (_token!.isEmpty || _phone!.isEmpty || _code!.isEmpty) {
+    print('Code: $_code : Phone: $_phone : Token: $_token : Uid: $_uid');
+
+    if (_token == null || _phone == null || _code == null || _uid == null) {
       return false;
     }
 
-    final response = await _connectHelper.makeRequest(
-      'login',
-      Request.POST,
-      {
-        "countryCode": _code,
-        "phoneNumber": _phone,
-        "token": _token,
-      },
-      true,
-      {
-        'Content-Type': 'application/json',
-      },
-    );
+    authToken.value = _token;
 
-    final result = json.decode(response.body) as Map<String, dynamic>;
-    appUser.value = UserModel.fromJson(result);
-    Utility.showLog(msg: result);
+    // final response = await _connectHelper.makeRequest(
+    //   'login',
+    //   Request.POST,
+    //   {
+    //     "countryCode": _code,
+    //     "phoneNumber": _phone,
+    //     "token": _token,
+    //   },
+    //   true,
+    //   {
+    //     'Content-Type': 'application/json',
+    //   },
+    // );
 
-    if (response.statusCode == 200) {
-      authToken.value = 'Bearer ${result['token']}';
-      Get.offAll(() => HomeScreen());
-      return true;
-    } else {
-      prefs.clear();
-      return false;
-    }
+    // final result = json.decode(response.body) as Map<String, dynamic>;
+    // appUser.value = UserModel.fromJson(result);
+    // Utility.showLog(msg: result);
+
+    Get.offAll(() => HomeScreen());
+    return true;
+
+    // if (response.statusCode == 200) {
+    //   authToken.value = 'Bearer ${result['token']}';
+    //   return true;
+    // } else {
+    //   prefs.clear();
+    //   return false;
+    // }
   }
 
-  Future<void> checkIfUserLoggedIn() async {
-    final user = FirebaseAuth.instance.currentUser;
+  // Future<void> checkIfUserLoggedIn() async {
+  //   final user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      final jwtToken = await user.getIdTokenResult();
-      // _auth.signInWithCustomToken(token)
-      final token = await user.getIdToken();
-      log(token);
-      print(user.toString());
-    }
-  }
+  //   if (user != null) {
+  //     // final jwtToken = await user.getIdTokenResult();
+  //     // _auth.signInWithCustomToken(token)
+  //     final token = await user.getIdToken();
+  //   }
+  // }
 
   void signIn(String? smsCode) async {
     final prefs = await SharedPreferences.getInstance();
@@ -165,13 +198,15 @@ class AuthController extends GetxController {
 
         final result = json.decode(response.body) as Map<String, dynamic>;
         appUser.value = UserModel.fromJson(result);
+        authToken.value = 'Bearer ${result['token']}';
+
         Utility.showLog(msg: result);
 
         prefs.setString('countryCode', countryCode.value);
         prefs.setString('phone', phoneNo.value);
-        prefs.setString('token', jwtToken);
+        prefs.setString('token', authToken.value);
+        prefs.setString('uid', authToken.value);
 
-        authToken.value = 'Bearer ${result['token']}';
         Get.offAll(() => HomeScreen());
       } else {
         Utility.showLog(msg: jwtToken);
@@ -197,13 +232,8 @@ class AuthController extends GetxController {
     String? email,
     String? gender,
   }) async {
-    print(phoneNumber);
-    print(jwtToken);
-    print(firstName);
-    print(lastName);
-    print(countryCode);
-    print(email);
-    print(gender);
+    final prefs = await SharedPreferences.getInstance();
+
     final response = await _connectHelper.makeRequest(
       'signUp',
       Request.POST,
@@ -221,9 +251,19 @@ class AuthController extends GetxController {
         'token': jwtToken,
       },
     );
-    Utility.showLog(msg: response.body);
     final result = json.decode(response.body) as Map<String, dynamic>;
+
+    appUser.value = UserModel.fromJson(result);
+    authToken.value = 'Bearer ${result['token']}';
+
     Utility.showLog(msg: result);
+
+    prefs.setString('countryCode', countryCode.value);
+    prefs.setString('phone', phoneNo.value);
+    prefs.setString('token', authToken.value);
+    prefs.setString('uid', authToken.value);
+
+    Get.offAll(() => HomeScreen());
   }
 
   Future<void> phoneSignIn({required String phoneNumber}) async {

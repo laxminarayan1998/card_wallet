@@ -1,14 +1,8 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
 import 'package:card_walet/Screens/Search%20Result%20Screen/search_result_screen.dart';
-import 'package:card_walet/Utility/utils.dart';
 import 'package:card_walet/Widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 import 'Widgets/item_widget.dart';
@@ -26,34 +20,33 @@ class HomeScreen extends StatelessWidget {
     },
     {
       "icon": "assets/icon/football.png",
-      'name': 'Football',
+      'name': 'Baseball',
       'color': Color(0xFFA6E8FE),
     },
     {
       "icon": "assets/icon/basketball.png",
-      'name': 'Basket Ball',
+      'name': 'Basketball',
       'color': Color(0xFFDCFEDB),
     },
     {
       "icon": "assets/icon/table_tennis.png",
-      'name': 'Table Tennis',
+      'name': 'Boxing',
       'color': Color(0xFFEADAFE),
     },
     {
       "icon": "assets/icon/hockey.png",
-      'name': 'Hockey',
+      'name': 'Football',
       'color': Color(0xFFFFC6A8),
     },
     {
       "icon": "assets/icon/weightlifting.png",
-      'name': 'Weightlifting',
+      'name': 'Golf',
       'color': Color(0xFFFFD064),
     },
   ];
 
   @override
   Widget build(BuildContext context) {
-    print(authController.appUser.value.toJson());
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Column(
@@ -167,8 +160,9 @@ class HomeScreen extends StatelessWidget {
                 ),
                 itemBuilder: (_, index) => GestureDetector(
                   onTap: () {
-                    authController.getSportList('sport');
-                    // Get.to(SearchResultScreen());
+                    authController.selectedSport.value =
+                        sportsList[index]['name']! as String;
+                    Get.to(() => SearchResultScreen());
                   },
                   child: ItemWidget(
                     color: sportsList[index]['color']! as Color,

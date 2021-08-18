@@ -15,6 +15,7 @@ class CustomCard extends StatelessWidget {
     this.printRun,
     this.price,
     this.onPress,
+    this.setName,
   }) : super(key: key);
 
   final String? name;
@@ -25,6 +26,7 @@ class CustomCard extends StatelessWidget {
   final String? parrallel;
   final String? printRun;
   final String? price;
+  final String? setName;
   final Function()? onPress;
 
   @override
@@ -58,7 +60,7 @@ class CustomCard extends StatelessWidget {
                       Radius.circular(defaultPadding),
                     ),
                   ),
-                  child: Image.asset(img!),
+                  child: Image.network(img!),
                 ),
                 SizedBox(width: defaultPadding),
                 Expanded(
@@ -117,13 +119,17 @@ class CustomCard extends StatelessWidget {
                         value: '$baseInsert',
                       ),
                       TextWidgetTwo(
-                        text: 'Parallel',
-                        value: '$parrallel',
+                        text: 'Set Name',
+                        value: '$setName',
                       ),
-                      TextWidgetTwo(
-                        text: 'Print Run',
-                        value: '$printRun',
-                      ),
+                      // TextWidgetTwo(
+                      //   text: 'Parallel',
+                      //   value: '$parrallel',
+                      // ),
+                      // TextWidgetTwo(
+                      //   text: 'Print Run',
+                      //   value: '$printRun',
+                      // ),
                     ],
                   ),
                 ),
@@ -142,7 +148,7 @@ class CustomCard extends StatelessWidget {
                   color: const Color(0xffc2e1ff),
                 ),
                 child: Text(
-                  '\$22.15',
+                  '\$$price',
                   style: TextStyle(
                     fontSize: 14,
                     color: mainColor,
