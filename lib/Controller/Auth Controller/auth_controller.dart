@@ -26,6 +26,7 @@ class AuthController extends GetxController {
   var playersList = <SportModel>[].obs;
   var selectedSport = ''.obs;
   var totalCount = 0.obs;
+  var selectedCard = SportModel().obs;
 
   Future<void> getSportList({int? limit, int? skip}) async {
     final prefs = await SharedPreferences.getInstance();

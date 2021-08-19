@@ -1,5 +1,6 @@
 import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
 import 'package:card_walet/Screens/Card%20Details%20Screen/card_details_screen.dart';
+import 'package:card_walet/Widgets/back_button.dart';
 import 'package:card_walet/Widgets/user_avatar.dart';
 import 'package:card_walet/constants.dart';
 import 'package:flutter/material.dart';
@@ -62,15 +63,7 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: mainColor,
-            leading: IconButton(
-              onPressed: () {
-                Get.back();
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              ),
-            ),
+            leading: CustomBackButton(),
             title: Text(
               'Search Results (${authController.totalCount})',
               style: TextStyle(
@@ -104,6 +97,8 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                         year: authController.playersList[index].setYear,
                         price: authController.playersList[index].priceScore,
                         onPress: () {
+                          authController.selectedCard.value =
+                              authController.playersList[index];
                           Get.to(() => CardDetailsScreen());
                         },
                       ),

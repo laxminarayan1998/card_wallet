@@ -1,3 +1,5 @@
+import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
+import 'package:card_walet/Widgets/back_button.dart';
 import 'package:card_walet/Widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,13 +8,16 @@ import '../../constants.dart';
 import 'Widgets/detail_widget.dart';
 
 class CardDetailsScreen extends StatelessWidget {
-  const CardDetailsScreen({Key? key}) : super(key: key);
+  CardDetailsScreen({Key? key}) : super(key: key);
+
+  final AuthController authController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mainColor,
+        leading: CustomBackButton(),
         title: Text(
           'Card Details',
           style: TextStyle(
@@ -29,8 +34,8 @@ class CardDetailsScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              'assets/images/img1.png',
+            Image.network(
+              authController.selectedCard.value.imageUrl!,
               width: double.infinity,
               height: Get.height * .5,
               fit: BoxFit.cover,
@@ -38,23 +43,23 @@ class CardDetailsScreen extends StatelessWidget {
             SizedBox(height: defaultPadding),
             DetailWidget(
               text: 'Player Name',
-              value: 'Ashley Williams',
+              value: '${authController.selectedCard.value.playerName}',
             ),
             DetailWidget(
               text: 'Sport',
-              value: 'Football (Soccer)',
+              value: '${authController.selectedCard.value.sport}',
             ),
             DetailWidget(
               text: 'Year',
-              value: '2016',
+              value: '${authController.selectedCard.value.setYear}',
             ),
             DetailWidget(
               text: 'Collection',
-              value: 'Prizm UEFA EURO',
+              value: '${authController.selectedCard.value.variation}',
             ),
             DetailWidget(
               text: 'Base / Insert',
-              value: 'Signatures',
+              value: '${authController.selectedCard.value.setName}',
             ),
           ],
         ),

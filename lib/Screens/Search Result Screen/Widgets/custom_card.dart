@@ -1,5 +1,6 @@
 import 'package:card_walet/Screens/Search%20Result%20Screen/Widgets/text_widget_two.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../constants.dart';
 
@@ -54,7 +55,7 @@ class CustomCard extends StatelessWidget {
               children: [
                 Container(
                   height: 110,
-                  width: 110,
+                  width: Get.width * .2,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(defaultPadding),
@@ -140,8 +141,8 @@ class CustomCard extends StatelessWidget {
               right: 0,
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: defaultPadding * 1.5,
-                  vertical: defaultPadding / 2,
+                  horizontal: Get.width * .03,
+                  vertical: Get.width * .01,
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(27.5),
