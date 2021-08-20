@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:card_walet/Model/SportModel.dart';
 import 'package:card_walet/Model/UserModel.dart';
@@ -103,7 +104,7 @@ class AuthController extends GetxController {
     final _token = prefs.getString('token');
     final _uid = prefs.getString('uid');
 
-    print('Code: $_code : Phone: $_phone : Token: $_token : Uid: $_uid');
+    log('Code: $_code : Phone: $_phone : Token: $_token : Uid: $_uid');
 
     if (_token == null || _phone == null || _code == null || _uid == null) {
       return false;
@@ -111,34 +112,29 @@ class AuthController extends GetxController {
 
     authToken.value = _token;
 
-    // final response = await _connectHelper.makeRequest(
-    //   'login',
-    //   Request.POST,
-    //   {
-    //     "countryCode": _code,
-    //     "phoneNumber": _phone,
-    //     "token": _token,
-    //   },
-    //   true,
-    //   {
-    //     'Content-Type': 'application/json',
-    //   },
-    // );
+    final response = await _connectHelper.makeRequest(
+      'getUser/$_uid',
+      Request.GET,
+      null,
+      true,
+      {
+        'Content-Type': 'application/json',
+        'Authorization': _token,
+      },
+    );
 
-    // final result = json.decode(response.body) as Map<String, dynamic>;
-    // appUser.value = UserModel.fromJson(result);
-    // Utility.showLog(msg: result);
+    final result = json.decode(response.body) as Map<String, dynamic>;
+    appUser.value = UserModel(userDetails: UserDetails.fromJson(result));
+    Utility.showLog(msg: result);
 
     Get.offAll(() => HomeScreen());
-    return true;
 
-    // if (response.statusCode == 200) {
-    //   authToken.value = 'Bearer ${result['token']}';
-    //   return true;
-    // } else {
-    //   prefs.clear();
-    //   return false;
-    // }
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      prefs.clear();
+      return false;
+    }
   }
 
   // Future<void> checkIfUserLoggedIn() async {
@@ -201,11 +197,13 @@ class AuthController extends GetxController {
         authToken.value = 'Bearer ${result['token']}';
 
         Utility.showLog(msg: result);
+        log(result.toString());
+        Utility.showLog(msg: 'UID : ${result['userDetails']['id']}');
 
         prefs.setString('countryCode', countryCode.value);
         prefs.setString('phone', phoneNo.value);
         prefs.setString('token', authToken.value);
-        prefs.setString('uid', authToken.value);
+        prefs.setString('uid', result['userDetails']['id']);
 
         Get.offAll(() => HomeScreen());
       } else {

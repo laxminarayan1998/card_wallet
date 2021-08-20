@@ -1,4 +1,5 @@
 import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
+import 'package:card_walet/Screens/Profile%20Screen/profile_screen.dart';
 import 'package:card_walet/Screens/Search%20Result%20Screen/search_result_screen.dart';
 import 'package:card_walet/Widgets/user_avatar.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,13 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       Image.asset('assets/icon/menu.png'),
                       Spacer(),
-                      UserAvatar()
+                      UserAvatar(
+                        onPress: () {
+                          Get.to(() => ProfilePage());
+                        },
+                        imgUrl: authController
+                            .appUser.value.userDetails!.profilePicture!,
+                      )
                     ],
                   ),
                 ),

@@ -1,7 +1,6 @@
 import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
 import 'package:card_walet/Screens/Card%20Details%20Screen/card_details_screen.dart';
 import 'package:card_walet/Widgets/back_button.dart';
-import 'package:card_walet/Widgets/user_avatar.dart';
 import 'package:card_walet/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -70,12 +69,6 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                 color: Colors.white,
               ),
             ),
-            actions: [
-              Transform.scale(
-                scale: .7,
-                child: UserAvatar(),
-              ),
-            ],
           ),
           body: SingleChildScrollView(
             controller: scrollController,
