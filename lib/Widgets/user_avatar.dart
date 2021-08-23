@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class UserAvatar extends StatelessWidget {
@@ -14,10 +15,23 @@ class UserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onPress,
-      child: CircleAvatar(
-        radius: 25.0,
-        backgroundImage: NetworkImage(imgUrl!),
-        backgroundColor: Colors.transparent,
+      child: Container(
+        width: 40,
+        height: 40,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10000.0),
+          child: CachedNetworkImage(
+            imageUrl: imgUrl!,
+            placeholder: (context, url) =>
+                Container(child: CircularProgressIndicator()),
+            fit: BoxFit.fill,
+            errorWidget: (context, url, error) => Icon(
+              Icons.account_circle_rounded,
+              size: 40,
+              color: Colors.black38,
+            ),
+          ),
+        ),
       ),
     );
   }

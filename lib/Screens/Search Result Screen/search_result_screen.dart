@@ -90,9 +90,13 @@ class _SearchResultScreenState extends State<SearchResultScreen> {
                         year: authController.playersList[index].setYear,
                         price: authController.playersList[index].priceScore,
                         onPress: () {
-                          authController.selectedCard.value =
+                          authController.selectedPlayer.value =
                               authController.playersList[index];
-                          Get.to(() => CardDetailsScreen());
+                          Get.to(
+                            () => CardDetailsScreen(
+                              id: authController.playersList[index].id!,
+                            ),
+                          );
                         },
                       ),
                     ).toList()

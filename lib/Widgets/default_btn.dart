@@ -6,10 +6,12 @@ class DefaultButton extends StatelessWidget {
     this.color,
     this.text,
     this.onPress,
+    this.height = 52,
   }) : super(key: key);
 
   final Color? color;
   final String? text;
+  final double? height;
   final Function()? onPress;
 
   @override
@@ -27,7 +29,7 @@ class DefaultButton extends StatelessWidget {
           ),
         ),
         width: double.infinity,
-        height: 52,
+        height: height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           color: color,

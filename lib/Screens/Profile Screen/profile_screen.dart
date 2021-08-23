@@ -1,7 +1,15 @@
+import 'dart:io';
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
+import 'package:card_walet/Model/UserModel.dart';
+import 'package:card_walet/Screens/Profile%20Screen/new.dart';
 import 'package:card_walet/Widgets/back_button.dart';
 import 'package:card_walet/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -13,10 +21,42 @@ class MapScreenState extends State<ProfilePage>
   final FocusNode myFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
 
+  final AuthController authController = Get.find();
+
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final phoneController = TextEditingController();
+
+  final ImagePicker _picker = ImagePicker();
+
+  PickedFile? _imageFile;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    firstNameController.text =
+        authController.appUser.value.userDetails!.firstName!;
+    lastNameController.text =
+        authController.appUser.value.userDetails!.lastName!;
+    emailController.text = authController.appUser.value.userDetails!.email!;
+    phoneController.text =
+        authController.appUser.value.userDetails!.countryCode! +
+            authController.appUser.value.userDetails!.phoneNumber!;
+  }
+
+  void _pickImage() async {
+    try {
+      final pickedFile = await _picker.getImage(
+        source: ImageSource.gallery,
+        imageQuality: 85,
+      );
+      setState(() {
+        _imageFile = pickedFile!;
+      });
+    } catch (e) {
+      print("Image picker error " + e.toString());
+    }
   }
 
   @override
@@ -47,30 +87,44 @@ class MapScreenState extends State<ProfilePage>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          width: 140.0,
-                          height: 140.0,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: ExactAssetImage('assets/images/as.png'),
-                              fit: BoxFit.cover,
-                            ),
+                          width: 140,
+                          height: 140,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10000.0),
+                            child: (_imageFile != null)
+                                ? Image.file(File(_imageFile!.path))
+                                : CachedNetworkImage(
+                                    imageUrl: authController.appUser.value
+                                        .userDetails!.profilePicture!,
+                                    placeholder: (context, url) => Container(
+                                        child: CircularProgressIndicator()),
+                                    fit: BoxFit.fill,
+                                    errorWidget: (context, url, error) => Icon(
+                                      Icons.account_circle_rounded,
+                                      size: 150,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                           ),
                         ),
                       ],
                     ),
                     Padding(
-                      padding: EdgeInsets.only(top: 90.0, right: 100.0),
+                      padding: EdgeInsets.only(top: 90.0, left: 100.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          CircleAvatar(
-                            backgroundColor: Colors.red,
-                            radius: 25.0,
-                            child: Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
+                          GestureDetector(
+                            onTap: () {
+                              _pickImage();
+                            },
+                            child: CircleAvatar(
+                              backgroundColor: Colors.red,
+                              radius: 20.0,
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                              ),
                             ),
                           )
                         ],
@@ -113,19 +167,42 @@ class MapScreenState extends State<ProfilePage>
                       Padding(
                         padding:
                             EdgeInsets.only(left: 25.0, right: 25.0, top: 2.0),
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter you phone number!';
-                            } else if (value.length < 10) {
-                              return 'Please enter 10-digit phone number!';
-                            }
-                          },
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            hintText: 'Phone',
-                            hintStyle: TextStyle(fontSize: 12),
-                          ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.isNotEmpty) {
+                                    return null;
+                                  }
+                                  return 'This field cannot be empty!';
+                                },
+                                controller: firstNameController,
+                                decoration: InputDecoration(
+                                  hintText: 'First Name',
+                                  labelText: 'First Name',
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: defaultPadding,
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                validator: (value) {
+                                  if (value!.isNotEmpty) {
+                                    return null;
+                                  }
+                                  return 'This field cannot be empty!';
+                                },
+                                controller: lastNameController,
+                                decoration: InputDecoration(
+                                  hintText: 'Last Name',
+                                  labelText: 'Last Name',
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       Padding(
@@ -133,13 +210,14 @@ class MapScreenState extends State<ProfilePage>
                             EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
                         child: TextFormField(
                           validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter you phone number!';
-                            } else if (value.length < 10) {
-                              return 'Please enter 10-digit phone number!';
+                            if (RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value!)) {
+                              return null;
                             }
+                            return 'Email format is wrong!';
                           },
-                          keyboardType: TextInputType.phone,
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: 'Email ID',
                             hintStyle: TextStyle(fontSize: 12),
@@ -151,112 +229,69 @@ class MapScreenState extends State<ProfilePage>
                             EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
                         child: TextFormField(
                           validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter you phone number!';
-                            } else if (value.length < 10) {
-                              return 'Please enter 10-digit phone number!';
+                            if (value!.isNotEmpty) {
+                              return null;
                             }
+                            return 'This field cannot be empty!';
                           },
-                          keyboardType: TextInputType.phone,
+                          readOnly: true,
+                          controller: phoneController,
                           decoration: InputDecoration(
-                            hintText: 'Mobile',
-                            hintStyle: TextStyle(fontSize: 12),
+                            hintText: 'Phone',
+                            labelText: 'Phone',
                           ),
                         ),
                       ),
                       Padding(
                         padding:
-                            EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter you phone number!';
-                                  } else if (value.length < 10) {
-                                    return 'Please enter 10-digit phone number!';
+                            EdgeInsets.only(left: 25.0, right: 25.0, top: 35.0),
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 10.0),
+                          child: Container(
+                              width: double.infinity,
+                              child: RaisedButton(
+                                child: Text("Save"),
+                                textColor: Colors.white,
+                                color: Colors.green,
+                                onPressed: () async {
+                                  setState(() {
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                  });
+                                  if (_formKey.currentState!.validate()) {
+                                    await authController.updateUserData(
+                                      UserDetails(
+                                        countryCode: authController.appUser
+                                            .value.userDetails!.countryCode,
+                                        firstName: firstNameController.text,
+                                        lastName: lastNameController.text,
+                                        email: emailController.text,
+                                        gender: authController
+                                            .appUser.value.userDetails!.gender,
+                                        id: authController
+                                            .appUser.value.userDetails!.id,
+                                        phoneNumber: authController.appUser
+                                            .value.userDetails!.phoneNumber,
+                                        planEnd: authController
+                                            .appUser.value.userDetails!.planEnd,
+                                        profilePicture: authController.appUser
+                                            .value.userDetails!.profilePicture,
+                                        userCode: authController.appUser.value
+                                            .userDetails!.userCode,
+                                      ),
+                                    );
+                                    if (_imageFile != null) {
+                                      await authController.updateUserImg(
+                                        selectedCardId: authController
+                                            .appUser.value.userDetails!.id,
+                                        filePath: _imageFile!.path,
+                                      );
+                                    }
                                   }
                                 },
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  hintText: 'Pin Code',
-                                  hintStyle: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: defaultPadding),
-                            Expanded(
-                              child: TextFormField(
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Please enter you phone number!';
-                                  } else if (value.length < 10) {
-                                    return 'Please enter 10-digit phone number!';
-                                  }
-                                },
-                                keyboardType: TextInputType.phone,
-                                decoration: InputDecoration(
-                                  hintText: 'State',
-                                  hintStyle: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            EdgeInsets.only(left: 25.0, right: 25.0, top: 25.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(right: 10.0),
-                                child: Container(
-                                    child: RaisedButton(
-                                  child: Text("Save"),
-                                  textColor: Colors.white,
-                                  color: Colors.green,
-                                  onPressed: () {
-                                    setState(() {
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                    });
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                )),
-                              ),
-                              flex: 2,
-                            ),
-                            Expanded(
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 10.0),
-                                child: Container(
-                                    child: RaisedButton(
-                                  child: Text("Cancel"),
-                                  textColor: Colors.white,
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    setState(() {
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                    });
-                                  },
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                )),
-                              ),
-                              flex: 2,
-                            ),
-                          ],
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                              )),
                         ),
                       ),
                     ],
@@ -275,70 +310,5 @@ class MapScreenState extends State<ProfilePage>
     // Clean up the controller when the Widget is disposed
     myFocusNode.dispose();
     super.dispose();
-  }
-
-  Widget _getActionButtons() {
-    return Padding(
-      padding: EdgeInsets.only(left: 25.0, right: 25.0, top: 45.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: 10.0),
-              child: Container(
-                  child: RaisedButton(
-                child: Text("Save"),
-                textColor: Colors.white,
-                color: Colors.green,
-                onPressed: () {
-                  setState(() {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 2,
-          ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(left: 10.0),
-              child: Container(
-                  child: RaisedButton(
-                child: Text("Cancel"),
-                textColor: Colors.white,
-                color: Colors.red,
-                onPressed: () {
-                  setState(() {
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  });
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
-              )),
-            ),
-            flex: 2,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _getEditIcon() {
-    return GestureDetector(
-      child: CircleAvatar(
-        backgroundColor: Colors.red,
-        radius: 14.0,
-        child: Icon(
-          Icons.edit,
-          color: Colors.white,
-          size: 16.0,
-        ),
-      ),
-      onTap: () {},
-    );
   }
 }

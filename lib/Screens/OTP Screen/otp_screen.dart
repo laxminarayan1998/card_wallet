@@ -1,5 +1,6 @@
 import 'package:card_walet/Controller/Auth%20Controller/auth_controller.dart';
 import 'package:card_walet/Utility/utils.dart';
+import 'package:card_walet/Widgets/back_button.dart';
 import 'package:card_walet/Widgets/default_btn.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,6 +42,7 @@ class OtpScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
+        leading: CustomBackButton(),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -104,17 +106,26 @@ class OtpScreen extends StatelessWidget {
               },
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Didn\'t receive the code?'),
-              Text(
-                ' RESEND',
-                style: TextStyle(
-                  color: mainColor,
+          GestureDetector(
+            onTap: () {
+              print(authController.countryCode.value +
+                  authController.phoneNo.value);
+              authController.phoneSignIn(
+                  phoneNumber: authController.countryCode.value +
+                      authController.phoneNo.value);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Didn\'t receive the code?'),
+                Text(
+                  ' RESEND',
+                  style: TextStyle(
+                    color: mainColor,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(defaultPadding),
