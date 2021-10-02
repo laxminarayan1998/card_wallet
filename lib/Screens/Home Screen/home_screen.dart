@@ -25,12 +25,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final sportsList = [
     {
-      "icon": "assets/icon/cricket.png",
-      'name': 'Cricket',
+      "icon": "assets/icon/MMA.png",
+      'name': 'MMA',
       'color': Color(0xFFFFF6AB),
     },
     {
-      "icon": "assets/icon/football.png",
+      "icon": "assets/icon/baseball.png",
       'name': 'Baseball',
       'color': Color(0xFFA6E8FE),
     },
@@ -40,18 +40,58 @@ class _HomeScreenState extends State<HomeScreen> {
       'color': Color(0xFFDCFEDB),
     },
     {
-      "icon": "assets/icon/table_tennis.png",
+      "icon": "assets/icon/boxing.png",
       'name': 'Boxing',
       'color': Color(0xFFEADAFE),
     },
     {
-      "icon": "assets/icon/hockey.png",
+      "icon": "assets/icon/football.png",
       'name': 'Football',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/track and field.png",
+      'name': 'Track and Field',
       'color': Color(0xFFFFC6A8),
     },
     {
-      "icon": "assets/icon/weightlifting.png",
+      "icon": "assets/icon/gymnastics.png",
+      'name': 'Gymnastics',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/swimming.png",
+      'name': 'Swimming',
+      'color': Color(0xFFDCFEDB),
+    },
+    {
+      "icon": "assets/icon/tennis.png",
+      'name': 'Tennis',
+      'color': Color(0xFFEADAFE),
+    },
+    {
+      "icon": "assets/icon/wrestling.png",
+      'name': 'Wrestling',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/hockey.png",
+      'name': 'Hockey',
+      'color': Color(0xFFDCFEDB),
+    },
+    {
+      "icon": "assets/icon/racing.png",
+      'name': 'Racing',
+      'color': Color(0xFFA6E8FE),
+    },
+    {
+      "icon": "assets/icon/golf.png",
       'name': 'Golf',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/soccer.png",
+      'name': 'Soccer',
       'color': Color(0xFFFFD064),
     },
   ];
@@ -253,12 +293,12 @@ class CustomDelegate extends SearchDelegate<String> {
 
   final sportsList = [
     {
-      "icon": "assets/icon/cricket.png",
-      'name': 'Cricket',
+      "icon": "assets/icon/MMA.png",
+      'name': 'MMA',
       'color': Color(0xFFFFF6AB),
     },
     {
-      "icon": "assets/icon/football.png",
+      "icon": "assets/icon/baseball.png",
       'name': 'Baseball',
       'color': Color(0xFFA6E8FE),
     },
@@ -268,18 +308,58 @@ class CustomDelegate extends SearchDelegate<String> {
       'color': Color(0xFFDCFEDB),
     },
     {
-      "icon": "assets/icon/table_tennis.png",
+      "icon": "assets/icon/boxing.png",
       'name': 'Boxing',
       'color': Color(0xFFEADAFE),
     },
     {
-      "icon": "assets/icon/hockey.png",
+      "icon": "assets/icon/football.png",
       'name': 'Football',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/track and field.png",
+      'name': 'Track and Field',
       'color': Color(0xFFFFC6A8),
     },
     {
-      "icon": "assets/icon/weightlifting.png",
+      "icon": "assets/icon/gymnastics.png",
+      'name': 'Gymnastics',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/swimming.png",
+      'name': 'Swimming',
+      'color': Color(0xFFDCFEDB),
+    },
+    {
+      "icon": "assets/icon/tennis.png",
+      'name': 'Tennis',
+      'color': Color(0xFFEADAFE),
+    },
+    {
+      "icon": "assets/icon/wrestling.png",
+      'name': 'Wrestling',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/hockey.png",
+      'name': 'Hockey',
+      'color': Color(0xFFDCFEDB),
+    },
+    {
+      "icon": "assets/icon/racing.png",
+      'name': 'Racing',
+      'color': Color(0xFFA6E8FE),
+    },
+    {
+      "icon": "assets/icon/golf.png",
       'name': 'Golf',
+      'color': Color(0xFFFFD064),
+    },
+    {
+      "icon": "assets/icon/soccer.png",
+      'name': 'Soccer',
       'color': Color(0xFFFFD064),
     },
   ];
